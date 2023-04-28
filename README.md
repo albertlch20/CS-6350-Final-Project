@@ -12,3 +12,4 @@ Copy and paste the code in model.py to databricks to run
 
 ### Model
 1. Add a 2-layer model from https://www.kaggle.com/code/wwsalmon/simple-mnist-nn-from-scratch-numpy-no-tf-keras/notebook, need to change it to RNN later.
+2. Add a simple RNN model
