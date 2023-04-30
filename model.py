@@ -19,6 +19,15 @@ def softmax(Z):
     f = np.exp(Z - np.max(Z))  
     return f / f.sum(axis=0)
     
+def one_hot_encoding(result):
+    # Convert label to one-hot encoding, ex: 1 -> [0 1]
+    new_result = np.zeros((2, 1))
+    new_result[result, 0] = 1
+    return new_result
+
+def update_parameters(W1, b1, W2, delta_W1, delta_b1, delta_W2, A):
+    return W1 - A * delta_W1, b1 - A * delta_b1, W2 - A * delta_W2 
+
 def forward(W1, b1, W2, x1, x2):
     A1 = W1.dot(x1) + b1
     O1 = softmax(A1)
@@ -27,30 +36,21 @@ def forward(W1, b1, W2, x1, x2):
     O2 = softmax(A2)
     return A1, A2, O1, O2
 
-def one_hot(y2):
-    # Convert label to one-hot encoding, ex: 1 -> [0
-    #                                              1]
-    y = np.zeros((2, 1))
-    y[y2, 0] = 1
-    return y
-
 def backward(A1, A2, O2, W1, W2, x1, x2, y2, m):
     # Backward propogation in RNN
-    y = one_hot(y2)
-    dA2 = O2 - y
-    dW2 = dA2.dot(A1.T) / m
-    dW1 = (dA2.dot(x2.T) + W2.T.dot(dA2).dot(x1.T)) / m
-    db1 = (dA2 + W2.T.dot(dA2)) / m
-    return dW1, db1, dW2
-
-def update_params(W1, b1, W2, dW1, db1, dW2, alpha):
-    return W1 - alpha * dW1, b1 - alpha * db1, W2 - alpha * dW2 
+    y = one_hot_encoding(y2)
+    delta_A2 = O2 - y
+    delta_W2 = delta_A2.dot(A1.T) / m
+    delta_W1 = (delta_A2.dot(x2.T) + W2.T.dot(delta_A2).dot(x1.T)) / m
+    delta_b1 = (delta_A2 + W2.T.dot(delta_A2)) / m
+    return delta_W1, delta_b1, delta_W2
 
 def predict(probs):
     # Convert probabilities to predicted labels
-    return np.argmax(probs, 0)
+    Pred_Y = np.argmax(probs, 0)
+    return Pred_Y
 
-def get_accuracy(preds, Y):
+def accuracy(preds, Y):
     return np.sum(preds == Y) / Y.size
 
 def train(X, Y, alpha, iterations):
@@ -62,8 +62,8 @@ def train(X, Y, alpha, iterations):
         for j in range(X.shape[1]-1):
             x1, x2 = np.reshape(X[:, j], (4,1)), np.reshape(X[:, j+1], (4,1))
             A1, A2, O1, O2 = forward(W1, b1, W2, x1, x2)
-            dW1, db1, dW2 = backward(A1, A2, O2, W1, W2, x1, x2, Y[j+1], m)
-            W1, b1, W2 = update_params(W1, b1, W2, dW1, db1, dW2, alpha)
+            delta_W1, delta_b1, delta_W2 = backward(A1, A2, O2, W1, W2, x1, x2, Y[j+1], m)
+            W1, b1, W2 = update_parameters(W1, b1, W2, delta_W1, delta_b1, delta_W2, alpha)
             if j == 0:
                 pred_probs[0, 0] = O1[0, 0]
                 pred_probs[1, 0] = O1[1, 0]
@@ -71,8 +71,8 @@ def train(X, Y, alpha, iterations):
             pred_probs[1, j+1] = O2[1, 0]
         if (i+1) == iterations or i == 0:
             print("Iteration:", i+1)
-            predictions = predict(pred_probs)
-            print(get_accuracy(predictions, Y))
+            iter_predictions = predict(pred_probs)
+            print(accuracy(iter_predictions, Y))
     return W1, b1, W2
 
 def predict_test(X, W1, b1, W2):
@@ -125,7 +125,7 @@ Y_test = Y_test.T
 # Train and test
 W1, b1, W2 = train(X, Y, 0.01, 50)
 test_pred = predict_test(X_test, W1, b1, W2)
-print(get_accuracy(test_pred, Y_test))
+print(accuracy(test_pred, Y_test))
 
 # Experiments
 for lr in [0.001, 0.005, 0.01, 0.05]:
@@ -133,5 +133,5 @@ for lr in [0.001, 0.005, 0.01, 0.05]:
         print("--- lr", lr, "iter", iter, "---")
         W1, b1, W2 = train(X, Y, lr, iter)
         test_pred = predict_test(X_test, W1, b1, W2)
-        print("acc:", get_accuracy(test_pred, Y_test))
+        print("acc:", accuracy(test_pred, Y_test))
         print("p, r, f:", get_metrics(test_pred, Y_test))
