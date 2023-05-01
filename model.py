@@ -45,7 +45,7 @@ def one_hot_encoding(result):
 ###########################################################
 # update W1, bias, W2 for new set using alpha parameter
 ###########################################################
-def update_parameters(W1, bias, W2, delta_W1, delta_bias, delta_W2, alpha):
+def update_parameters(W1,  W2, bias, delta_W1,  delta_W2, delta_bias, alpha):
     return W1 - alpha * delta_W1, bias - alpha * delta_bias, W2 - alpha * delta_W2 
 
 ###########################################################
@@ -107,7 +107,7 @@ def train(X, Y, alpha, iterations):
             delta_W1, delta_bias, delta_W2 = backward(A1, A2, O2, W1, W2, x1, x2, Y[j+1], m)
             
             # update new parameters
-            W1, bias, W2 = update_parameters(W1, bias, W2, delta_W1, delta_bias, delta_W2, alpha)
+            W1, bias, W2 = update_parameters(W1,  W2, bias, delta_W1, delta_W2, delta_bias, alpha)
             
             #create output matrix
             if j == 0:
@@ -130,7 +130,7 @@ def predict_test(X, W1, bias, W2):
     pred_probs = np.zeros((2, X.shape[1]))
     for j in range(X.shape[1]-1):
         x1, x2 = np.reshape(X[:, j], (4,1)), np.reshape(X[:, j+1], (4,1))
-        A1, A2, O1, O2 = forward(W1, bias, W2, x1, x2) #calculate forward propagation 
+        A1, A2, O1, O2 = forward(W1, W2, bias, x1, x2): #calculate forward propagation 
         if j == 0:
             pred_probs[0, 0] = O1[0, 0] #initial matrix for good weather
             pred_probs[1, 0] = O1[1, 0] #initial matrix for bad weather
