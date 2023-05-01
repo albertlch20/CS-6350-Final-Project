@@ -109,17 +109,17 @@ def get_metrics(preds, Y):
 data = spark.read.option("inferSchema", "true").option("header", "true").csv("/FileStore/tables/SMS_train.csv")
 data = data.rdd.map(lambda x: (x['date'], x['precipitation'], x['temp_max'], x['temp_min'], x['wind'], x['weather'], get_label(x['weather']))).toDF(["date", 'precipitation', "temp_max", "temp_min", "wind", "weather", "label"])
 
-train = data.limit(1200)
-test = data.subtract(train).orderBy("date")
+training_set = data.limit(1200)
+testing_set = data.subtract(train).orderBy("date")
 
-X = np.array(train.select("precipitation", "temp_max", "temp_min", "wind").collect())
+X = np.array(training_set.select("precipitation", "temp_max", "temp_min", "wind").collect())
 X = X.T
-Y = np.array(train.select("label").collect()).flatten()
+Y = np.array(training_set.select("label").collect()).flatten()
 Y = Y.T
 
-X_test = np.array(test.select("precipitation", "temp_max", "temp_min", "wind").collect())
+X_test = np.array(testing_set.select("precipitation", "temp_max", "temp_min", "wind").collect())
 X_test = X_test.T
-Y_test = np.array(test.select("label").collect()).flatten()
+Y_test = np.array(testing_set.select("label").collect()).flatten()
 Y_test = Y_test.T
 
 # Train and test
