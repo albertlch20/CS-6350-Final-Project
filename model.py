@@ -16,7 +16,7 @@ def get_init_params():
 
 def softmax(Z):
     # Shift values to avoid overflow
-    f = np.exp(np.max(Z)-Z)  
+    f = np.exp(Z-np.max(Z))  
     return f / f.sum(axis=0)
     
 def one_hot_encoding(result):
