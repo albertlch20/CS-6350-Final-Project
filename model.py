@@ -168,7 +168,7 @@ data = data.rdd.map(lambda x: (x['date'], x['precipitation'], x['temp_max'], x['
 # split data into training and testing data sets and transpose matrix
 ###########################################################
 training_set = data.limit(1200)
-testing_set = data.subtract(train).orderBy("date")
+testing_set = data.subtract(training_set).orderBy("date")
 
 X = np.array(training_set.select("precipitation", "temp_max", "temp_min", "wind").collect())
 X = X.T
