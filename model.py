@@ -130,7 +130,7 @@ def predict_test(X, W1, bias, W2):
     pred_probs = np.zeros((2, X.shape[1]))
     for j in range(X.shape[1]-1):
         x1, x2 = np.reshape(X[:, j], (4,1)), np.reshape(X[:, j+1], (4,1))
-        A1, A2, O1, O2 = forward(W1, W2, bias, x1, x2): #calculate forward propagation 
+        A1, A2, O1, O2 = forward(W1, W2, bias, x1, x2) #calculate forward propagation 
         if j == 0:
             pred_probs[0, 0] = O1[0, 0] #initial matrix for good weather
             pred_probs[1, 0] = O1[1, 0] #initial matrix for bad weather
