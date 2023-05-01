@@ -3,6 +3,15 @@ import numpy as np
 
 
 ###########################################################
+# AWS public data file setting
+###########################################################
+spark.sparkContext._jsc.hadoopConfiguration().set('fs.s3a.access.key','AKIAXMYK3Q64GI24T45G')
+spark.sparkContext._jsc.hadoopConfiguration().set('fs.s3a.secret.key','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')
+spark.sparkContext._jsc.hadoopConfiguration().set('fs.s3a.endpoint','s3.amazonaws.com')
+input_path = 's3://kylbucket/seattle-weather.csv'
+
+
+###########################################################
 # separate the features into labels
 # Bad weather = 1
 # Good weather = 0
@@ -161,7 +170,7 @@ def get_metrics(preds, Y):
 ###########################################################
 # preprocess data
 ###########################################################
-data = spark.read.option("inferSchema", "true").option("header", "true").csv("/FileStore/tables/SMS_train.csv")
+data = spark.read.option("inferSchema", "true").option("header", "true").csv(input_path)
 data = data.rdd.map(lambda x: (x['date'], x['precipitation'], x['temp_max'], x['temp_min'], x['wind'], x['weather'], get_label(x['weather']))).toDF(["date", 'precipitation', "temp_max", "temp_min", "wind", "weather", "label"])
 
 ###########################################################
