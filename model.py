@@ -151,19 +151,20 @@ def predict_test(X, W1, bias, W2):
 ###########################################################
 # calculate precision, recall, F-1 score
 ###########################################################
-def get_metrics(preds, Y):
+def metrics(predicted, Y):
     # Compute the precision, recall, and f-1 score
-    tp, tn, fp, fn = 0, 0, 0, 0
-    for pred, ans in zip(preds, Y):
-        if pred == 0 and ans == 0: #true negative
-            tn += 1
-        if pred == 0 and ans == 1: #false negative
-            fn += 1
-        if pred == 1 and ans == 0: #false positive
-            fp += 1
-        if pred == 1 and ans == 1: #true positive
-            tp += 1
-    precision, recall = tp / (tp+fp), tp / (tp+fn) #calculate precision and recall 
+    true_p, true_n, false_p, false_n = 0, 0, 0, 0
+    for predicted, actual in zip(predicted, Y):
+        if predicted == 0 and actual == 0: #true negative
+            true_n = true_n + 1
+        if predicted == 0 and actual == 1: #false negative
+            false_n = false_n + 1
+        if predicted == 1 and actual == 0: #false positive
+            false_p = false_p + 1
+        if predicted == 1 and actual == 1: #true positive
+            true_p = true_p + 1
+    precision = true_p/(true_p + false_p) #calculate precision
+    recall =  true_p/ (true_p + false_n) #calculate recall 
     f1 = 2 * precision * recall / (precision + recall) #calculate F1-score
     return precision, recall, f1
 
@@ -207,4 +208,4 @@ for lr in [0.001, 0.005, 0.01, 0.05]:
         W1, bias, W2 = train(X, Y, lr, iter) #train model
         test_pred = predict_test(X_test, W1, bias, W2) #run model
         print("acc:", accuracy(test_pred, Y_test)) #get accuracy value
-        print("p, r, f:", get_metrics(test_pred, Y_test)) #get precision, recall, and f-1 score
+        print("p, r, f:", metrics(test_pred, Y_test)) #get precision, recall, and f-1 score
