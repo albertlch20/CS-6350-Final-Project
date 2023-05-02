@@ -1,17 +1,7 @@
 # CS-6350-Final-Project
+# Weather Prediction and RNN
+Authors: Chih-Hen Lee, Zhifang Deng, Kwonyoung Lee, Jessica Nguyen
 
 ## Note
-Copy and paste the code in model.py to databricks to run
-
-## Progress
-
-### Preprocessing
-1. Read dataset to dataframe
-2. Transfrom weather to label (rain, drizzle, snow = 1, others = 0)
-3. Split training/testing set (1200/261) (may consider adding val set later)
-
-### Model
-1. Add a 2-layer model from https://www.kaggle.com/code/wwsalmon/simple-mnist-nn-from-scratch-numpy-no-tf-keras/notebook, need to change it to RNN later.
-2. Add a simple RNN model
-3. Add more functions for experiments
-4. Experiments done
+1. Download model.py file 
+2. Copy and paste the code in model.py to Databricks to run
