@@ -11,6 +11,9 @@ Installation Instructions:
 1. Download model.py file 
 2. Copy and paste the code in model.py to Databricks to run
 
-Support: 
+Alternate Installation: 
 1. Import notebook from the Databricks link and run:  
 https://databricks-prod-cloudfront.cloud.databricks.com/public/4027ec902e239c93eaaa8714f173bcfc/2193793490938945/1609860499000205/3326247190937866/latest.html
+
+Support: 
+Dataset is hosted on the following AWS link: s3://kylbucket/seattle-weather.csv
