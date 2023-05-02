@@ -165,7 +165,7 @@ def metrics(predicted, Y):
             true_p = true_p + 1
     precision = true_p/(true_p + false_p) #calculate precision
     recall =  true_p/(true_p + false_n) #calculate recall 
-    f1 = 2 * precision * recall/(precision + recall) #calculate F1-score
+    f1 = 2 * precision * recall / (precision + recall) #calculate F1-score
     return precision, recall, f1
 
 ###########################################################
